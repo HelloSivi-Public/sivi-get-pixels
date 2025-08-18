@@ -33,13 +33,15 @@ module.exports = function getPixels(url, type, cb) {
   if(type && type !== ''){
     mimeType = type.toLowerCase()
 
-    if(type.includes('.jpg') || type.includes('.jpeg')) {
+    if(type.includes('jpg') || type.includes('jpeg')) {
       defaultImageType = '.JPG'
-    } else if (type.includes('.png')) {
+    } else if (type.includes('png')) {
       defaultImageType = '.PNG'
     }
   }
-  var imageType = defaultImageType || path.extname(url).toUpperCase() || '.JPG'
+  var extn = path.extname(url).toUpperCase()
+  extn = extn.length > 0 && extn.length < 5 ? extn : '.JPG'
+  var imageType = defaultImageType || extn || '.JPG'
   if(Buffer.isBuffer(url)) {
     url = 'data:' + mimeType + ';base64,' + url.toString('base64')
     defaultImage(url, cb)
