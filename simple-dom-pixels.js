@@ -27,17 +27,25 @@ module.exports = function getPixels(url, type, cb) {
     type = ''
   }
 
-  const MimeType = type?.toUpperCase() || path.extname(url).toUpperCase()
-  console.log(MimeType)
+  var mimeType = 'image/jpeg'
+  var defaultImageType = false
+
+  if(type && type !== ''){
+    mimeType = type.toLowerCase()
+
+    if(type.includes('.jpg') || type.includes('.jpeg')) {
+      defaultImageType = '.JPG'
+    } else if (type.includes('.png')) {
+      defaultImageType = '.PNG'
+    }
+  }
+  var imageType = defaultImageType || path.extname(url).toUpperCase() || '.JPG'
   if(Buffer.isBuffer(url)) {
-    console.log('buffer')
-    url = 'data:' + type + ';base64,' + url.toString('base64')
+    url = 'data:' + mimeType + ';base64,' + url.toString('base64')
     defaultImage(url, cb)
-  } else if (MimeType === '.PNG' || MimeType === '.JPEG' || MimeType === '.JPG') {
-    console.log('image')
+  } else if (imageType === '.PNG' || imageType === '.JPEG' || imageType === '.JPG') {
     defaultImage(url, cb)
   } else {
-    console.log('else')
     cb(new Error('Unsupported image type'))
   }
 }
